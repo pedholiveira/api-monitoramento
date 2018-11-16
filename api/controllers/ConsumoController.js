@@ -1,42 +1,57 @@
-'use strict';
+'use strict'
 var mongoose = require('mongoose'),
-    Consumo = mongoose.model('Consumo');
+    Consumo = mongoose.model('Consumo')
 
 var meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
 exports.obterConsumos = function (req, res) {
-    let medidor = req.params.medidor;
-    console.log(medidor);
+    const medidor = req.params.medidor
+    console.log(medidor)
     Consumo.find({ nome: new RegExp(medidor, 'i')}, function (err, consumos) {
         if (err) {
-            res.send(err);
+            res.send(err)
         }            
-        res.json(consumos);
-    });
-};
+        res.json(JSON.stringify(agruparConsumos(consumos)))
+    })
+}
 
 exports.obterMedidores = function (req, res) {
     Consumo.find().distinct('nome', function (err, nomes) {
         if (err) {
-            res.send(err);
+            res.send(err)
         }
-        res.json(nomes);
-    });
+        res.json(nomes)
+    })
 }
 
-var agruparConsumos = function(consumos) {
-    let consumosPorMes = {};
-    consumos.map(c => {
-        let mes = meses[c.data.getMonth()] + ', ' + c.data.getFullYear();
-        if(consumosPorMes[mes] === undefined) {
-            consumosPorMes[mes] = [];
-        }
-        consumosPorMes[mes].push(c);
-    });
-    for (let mes of Object.keys(consumosPorMes)) {
-        console.log(consumosPorMes[mes]);
-        consumosPorMes[mes].reduce((a, b) => a.valor + b.valor, 0);
+const agruparConsumos = function(consumos) {
+    const consumosPorMes = consumos.map(({valor, data}) => ({
+        consumo: valor,
+        referencia: converterDataParaReferencia(data)
+    }))
+    console.log(consumosPorMes)
+    const consumosAgrupados = consumosPorMes.reduce((acumulador, {consumo, referencia}) => {
+        const anterior = acumulador[referencia] || 0
+        return Object.assign(acumulador, {
+            [referencia]: anterior + consumo
+        })
+    }, [])
+    
+    console.log(consumosAgrupados)
+    var array = [];
+    for(const mes in consumosAgrupados) {
+        array.push({
+            valor: consumosAgrupados[mes],
+            data: mes
+        })
     }
-    console.log(consumosPorMes);
+    console.log(array)
+    return array
+}
+
+const converterDataParaReferencia = function(data) {
+    const mes = meses[data.getMonth()]
+    const ano = data.getFullYear()
+    return `${mes}, ${ano}`
 }
