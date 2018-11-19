@@ -39,14 +39,14 @@ exports.obterConsumos = function(medidor, callback, error) {
 const agruparConsumos = function(consumos) {
     const consumosPorMes = consumos.map(({valor, data}) => ({
         consumo: valor,
-        data: data,
+        mes: data.getMonth(),
         referencia: converterDataParaReferencia(data)
     }))
-    const consumosAgrupados = consumosPorMes.reduce((acumulador, {consumo, data, referencia}) => {
+    const consumosAgrupados = consumosPorMes.reduce((acumulador, {consumo, mes, referencia}) => {
         const anterior = acumulador[referencia] || 0
         return Object.assign(acumulador, {
             [referencia]: anterior + consumo,
-            data: data
+            mes: mes
         })
     }, [])
     
@@ -55,7 +55,7 @@ const agruparConsumos = function(consumos) {
         array.push({
             valor: consumosAgrupados[referencia],
             dataReferencia: referencia,
-            mes: consumosAgrupados.data.getMonth()
+            mes: consumosAgrupados.mes
         })
     }
     return array
