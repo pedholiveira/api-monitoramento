@@ -1,6 +1,7 @@
 'use strict'
 var mongoose = require('mongoose'),
-    Consumo = mongoose.model('Consumo')
+    Consumo = mongoose.model('Consumo'),
+    utilitarioData = require('../utils/UtilitarioData')
 
 var meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
             'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
@@ -21,7 +22,12 @@ exports.obterMedidores = function(callback, error) {
  * Retorna a lista de consumos de um medidor específico.
  */
 exports.obterConsumos = function(medidor, callback, error) {
-    Consumo.find({ nome: new RegExp(medidor, 'i')})
+    const primeiroDiaAno = utilitarioData.obterPrimeiroDiaAno()
+    const ultimoDiaAno = utilitarioData.obterUltimoDiaAno()
+    Consumo.find({ 
+                nome: new RegExp(medidor, 'i'),
+                data: { $gte: primeiroDiaAno, $lte: ultimoDiaAno }
+            })
             .sort('data')
             .exec(function (err, consumos) {
                 if (err && error) {
@@ -29,6 +35,13 @@ exports.obterConsumos = function(medidor, callback, error) {
                 }            
                 callback(agruparConsumos(consumos))
             })
+}
+
+/**
+ * Retorna a lista de consumos de um mês específico para um medidor
+ */
+exports.obterConsumosMensal = function(medidor, mes, callback, error) {
+
 }
 
 /**
