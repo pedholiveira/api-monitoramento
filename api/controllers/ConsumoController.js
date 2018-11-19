@@ -13,7 +13,7 @@ exports.obterConsumos = function (req, res) {
             res.send(err)
         }            
         res.json(JSON.stringify(agruparConsumos(consumos)))
-    })
+    }).orderBy('data')
 }
 
 exports.obterMedidores = function (req, res) {
