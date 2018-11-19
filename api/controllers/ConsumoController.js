@@ -8,12 +8,14 @@ var meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
 exports.obterConsumos = function (req, res) {
     const medidor = req.params.medidor
     console.log(medidor)
-    Consumo.find({ nome: new RegExp(medidor, 'i')}, function (err, consumos) {
-        if (err) {
-            res.send(err)
-        }            
-        res.json(agruparConsumos(consumos))
-    })
+    Consumo.find({ nome: new RegExp(medidor, 'i')})
+            .sort('data')
+            .exec(function (err, consumos) {
+                if (err) {
+                    res.send(err)
+                }            
+                res.json(agruparConsumos(consumos))
+            })
 }
 
 exports.obterMedidores = function (req, res) {
