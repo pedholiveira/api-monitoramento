@@ -45,17 +45,19 @@ const agruparConsumos = function(consumos) {
     const consumosAgrupados = consumosPorMes.reduce((acumulador, {consumo, mes, referencia}) => {
         const anterior = acumulador[referencia] || 0
         return Object.assign(acumulador, {
-            [referencia]: anterior + consumo,
-            mes: mes
+            [referencia]: {
+                valor: anterior + consumo,
+                mes: mes
+            }
         })
     }, [])
     
     var array = [];
     for(const referencia in consumosAgrupados) {
         array.push({
-            valor: consumosAgrupados[referencia],
-            dataReferencia: referencia,
-            mes: consumosAgrupados.mes
+            valor: consumosAgrupados[referencia].valor,
+            mes: consumosAgrupados[referencia].mes,
+            dataReferencia: referencia
         })
     }
     return array
