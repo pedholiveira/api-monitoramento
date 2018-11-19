@@ -43,10 +43,7 @@ const agruparConsumos = function(consumos) {
         referencia: converterDataParaReferencia(data)
     }))
     const consumosAgrupados = consumosPorMes.reduce((acumulador, {consumo, mes, referencia}) => {
-        const anterior = 0
-        if(acumulador[referencia]) {
-            anterior = acumulador[referencia].valor
-        }
+        const anterior = acumulador[referencia].valor || 0
         return Object.assign(acumulador, {
             [referencia]: {
                 valor: anterior + consumo,
