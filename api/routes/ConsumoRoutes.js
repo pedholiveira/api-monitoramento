@@ -5,6 +5,9 @@ module.exports = function (app) {
     app.route('/consumos/:medidor')
         .post(consumo.obterConsumos)
 
+    app.route('/consumosMensal/:medidor/:mes/:ano')
+        .post(consumo.obterConsumosMensal)
+
     app.route('/medidores')
         .get(consumo.obterMedidores)
 }

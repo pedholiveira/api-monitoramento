@@ -15,3 +15,13 @@ exports.obterMedidores = function (req, res) {
         err => res.send(err)
     )
 }
+
+exports.obterConsumosMensal = function (req, res) {
+    service.obterConsumosMensal(
+        req.params.medidor,
+        req.params.mes,
+        req.params.ano,
+        consumos => res.json(consumos), 
+        err => res.send(err)
+    )
+}

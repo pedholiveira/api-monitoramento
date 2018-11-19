@@ -40,8 +40,32 @@ exports.obterConsumos = function(medidor, callback, error) {
 /**
  * Retorna a lista de consumos de um mês específico para um medidor
  */
-exports.obterConsumosMensal = function(medidor, mes, callback, error) {
+exports.obterConsumosMensal = function(medidor, mes, ano, callback, error) {
+    const primeiroDiaMes = utilitarioData.obterPrimeiroDiaMes(+mes, +ano)
+    const ultimoDiaMes = utilitarioData.obterUltimoDiaMes(+mes, +ano)
+    Consumo.find({ 
+                nome: new RegExp(medidor, 'i'),
+                data: { $gte: primeiroDiaMes, $lte: ultimoDiaMes }
+            })
+            .sort('data')
+            .exec(function (err, consumos) {
+                if (err && error) {
+                    error(err)
+                }            
+                callback(consumos)
+            })
+}
 
+/**
+ * Agrupa uma lista de consumos mensal.
+ * 
+ * @param {*} consumos 
+ */
+const agruparConsumosMensal = function(consumos) {
+    return consumos.map(({valor, data}) => ({
+        valor: valor,
+        data: utilitarioData.formatarDiaMes(data)
+    }))
 }
 
 /**
