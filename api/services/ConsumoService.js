@@ -3,9 +3,6 @@ var mongoose = require('mongoose'),
     Consumo = mongoose.model('Consumo'),
     utilitarioData = require('../utils/UtilitarioData')
 
-var meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
-
 /**
  * Retorna a lista de medidores existentes na base de consumo.
  */
@@ -33,7 +30,7 @@ exports.obterConsumos = function(medidor, callback, error) {
                 if (err && error) {
                     error(err)
                 }            
-                callback(agruparConsumos(consumos))
+                callback(agruparConsumos(consumos, utilitarioData.converterDataParaReferencia))
             })
 }
 
@@ -43,6 +40,8 @@ exports.obterConsumos = function(medidor, callback, error) {
 exports.obterConsumosMensal = function(medidor, mes, ano, callback, error) {
     const primeiroDiaMes = utilitarioData.obterPrimeiroDiaMes(+mes, +ano)
     const ultimoDiaMes = utilitarioData.obterUltimoDiaMes(+mes, +ano)
+    console.log(primeiroDiaMes)
+    console.log(ultimoDiaMes)
     Consumo.find({ 
                 nome: new RegExp(medidor, 'i'),
                 data: { $gte: primeiroDiaMes, $lte: ultimoDiaMes }
@@ -51,33 +50,21 @@ exports.obterConsumosMensal = function(medidor, mes, ano, callback, error) {
             .exec(function (err, consumos) {
                 if (err && error) {
                     error(err)
-                }            
-                callback(consumos)
+                }
+                callback(agruparConsumos(consumos, utilitarioData.formatarDiaMes))
             })
 }
 
 /**
- * Agrupa uma lista de consumos mensal.
+ * Agrupa uma lista de consumos por uma data de referência.
  * 
  * @param {*} consumos 
  */
-const agruparConsumosMensal = function(consumos) {
-    return consumos.map(({valor, data}) => ({
-        valor: valor,
-        data: utilitarioData.formatarDiaMes(data)
-    }))
-}
-
-/**
- * Agrupa uma lista de consumos pelo mês de referência.
- * 
- * @param {*} consumos 
- */
-const agruparConsumos = function(consumos) {
+const agruparConsumos = function(consumos, funcaoReferencia) {
     const consumosPorMes = consumos.map(({valor, data}) => ({
         consumo: valor,
         mes: data.getMonth(),
-        referencia: converterDataParaReferencia(data)
+        referencia: funcaoReferencia(data)
     }))
     const consumosAgrupados = consumosPorMes.reduce((acumulador, {consumo, mes, referencia}) => {
         let anterior = 0
@@ -101,15 +88,4 @@ const agruparConsumos = function(consumos) {
         })
     }
     return array
-}
-
-/**
- * Converte uma data de consumo para o formato do mês de referência.
- * 
- * @param {*} data 
- */
-const converterDataParaReferencia = function(data) {
-    const mes = meses[data.getMonth()]
-    const ano = data.getFullYear()
-    return `${mes}, ${ano}`
 }
