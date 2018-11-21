@@ -57,6 +57,31 @@ exports.obterConsumosMensal = function(medidor, mes, ano, callback, error) {
 }
 
 /**
+ * Retorna uma lista com os anos que possuem consumo.
+ */ 
+exports.obterAnosConsumo = function(medidor, callback, error) {
+    Consumo.aggregate([
+                {
+                    $match: {
+                        nome: new RegExp(medidor, 'i')
+                    }
+                },
+                {
+                    $group: {
+                        _id: { $year : "$data" }
+                    }
+                }
+            ])
+            .sort({'_id': 'desc'})
+            .exec(function (err, anos) {
+                if (err && error) {
+                    error(err)
+                }            
+                callback(anos)
+            })
+}
+
+/**
  * Agrupa uma lista de consumos mensal.
  * 
  * @param {*} consumos 

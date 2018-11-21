@@ -25,3 +25,11 @@ exports.obterConsumosMensal = function (req, res) {
         err => res.send(err)
     )
 }
+
+exports.obterAnosConsumo = function(req, res) {
+    service.obterAnosConsumo(
+        req.params.medidor,
+        anos => res.json(anos),
+        err => res.send(err)
+    )
+}

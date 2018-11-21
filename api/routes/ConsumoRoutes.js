@@ -10,4 +10,7 @@ module.exports = function (app) {
 
     app.route('/medidores')
         .get(consumo.obterMedidores)
+
+    app.route('/anosDisponiveis/:medidor')
+        .get(consumo.obterAnosConsumo)
 }
