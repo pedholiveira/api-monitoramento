@@ -76,7 +76,7 @@ exports.obterAnosConsumo = function(medidor, callback, error) {
                 if (err && error) {
                     error(err)
                 }            
-                callback(anos)
+                callback(anos.map(a => a['_id']))
             })
 }
 
