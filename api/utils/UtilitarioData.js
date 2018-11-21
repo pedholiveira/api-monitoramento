@@ -21,14 +21,14 @@ exports.obterUltimoDiaAno = function() {
  * Retorna o primeiro dia de um mês específico.
  */
 exports.obterPrimeiroDiaMes = function(mes, ano) {
-    return new Date(2018, 8, 1);
+    return new Date(ano, mes, 1);
 }
 
 /**
  * Retorna o último dia de um mês específico.
  */
 exports.obterUltimoDiaMes = function(mes, ano) {
-    return new Date(2018, 8 + 1, 0);
+    return new Date(ano, mes + 1, 0);
 }
 
 /**
