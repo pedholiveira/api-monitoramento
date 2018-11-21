@@ -6,15 +6,15 @@ var meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
 /**
  * Retorna o primeiro dia do ano atual.
  */
-exports.obterPrimeiroDiaAno = function() {
-    return new Date(new Date().getFullYear(), 0, 1);
+exports.obterPrimeiroDiaAno = function(ano) {
+    return new Date(ano, 0, 1);
 }
 
 /**
  * Retorna o ultimo dia do ano atual.
  */
-exports.obterUltimoDiaAno = function() {
-    return new Date(new Date().getFullYear(), 11, 31);
+exports.obterUltimoDiaAno = function(ano) {
+    return new Date(ano, 11, 31);
 }
 
 /**

@@ -2,7 +2,7 @@
 module.exports = function (app) {
     var consumo = require('../controllers/ConsumoController')
 
-    app.route('/consumos/:medidor')
+    app.route('/consumos/:medidor/:ano')
         .post(consumo.obterConsumos)
 
     app.route('/consumosMensal/:medidor/:mes/:ano')

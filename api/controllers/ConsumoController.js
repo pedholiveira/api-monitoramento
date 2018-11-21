@@ -4,6 +4,7 @@ var service = require('../services/ConsumoService')
 exports.obterConsumos = function (req, res) {
     service.obterConsumos(
         req.params.medidor, 
+        req.params.ano,
         consumos => res.json(consumos), 
         err => res.send(err)
     )

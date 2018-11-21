@@ -18,9 +18,9 @@ exports.obterMedidores = function(callback, error) {
 /**
  * Retorna a lista de consumos de um medidor específico.
  */
-exports.obterConsumos = function(medidor, callback, error) {
-    const primeiroDiaAno = utilitarioData.obterPrimeiroDiaAno()
-    const ultimoDiaAno = utilitarioData.obterUltimoDiaAno()
+exports.obterConsumos = function(medidor, ano, callback, error) {
+    const primeiroDiaAno = utilitarioData.obterPrimeiroDiaAno(ano)
+    const ultimoDiaAno = utilitarioData.obterUltimoDiaAno(ano)
     Consumo.find({ 
                 nome: new RegExp(medidor, 'i'),
                 data: { $gte: primeiroDiaAno, $lte: ultimoDiaAno }
